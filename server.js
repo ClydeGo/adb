@@ -4,12 +4,17 @@ var mongoClient = require('mongodb').MongoClient;
 var url = 'mongodb+srv://rannzel:tongco231@cluster0-mv99y.mongodb.net/test?retryWrites=true&w=majority';
 var dbname = "adb";
 
-function insert(obj){
+app.get('/insert', function(req, res){
 	mongoClient.connect(url, function(err, db){
 		if(err) console.log(err);
 		
 		var database = db.db(dbname);
 		collection = database.collection("data");
+
+		var obj = {
+			'test':'wack',
+			'yeet':'yo'
+		};
 
 		collection.insert(obj, function(err, resu){
 			if(err){
@@ -21,51 +26,23 @@ function insert(obj){
 
 		db.close();
 	});
-}
+});
 
-async function view(){
+app.get('/view', function(req, res){
 	mongoClient.connect(url, function(err, db){
 		if(err) console.log(err);
 		
 		database = db.db(dbname);
 		collection = database.collection("data");
 
-		var promise = new Promise(function(resolve, reject){
-			collection.find().toArray(function(err, result){
-				if(err) throw err;
+		collection.find().toArray(function(err, result){
+			if(err) throw err;
 
-				console.log("Res here" +JSON.stringify(result));
-				resolve(result);
-			});	
-		});
-
-		promise.then(function(res){
-			return res;
-		});		
+			console.log("Result is: "+ JSON.stringify(result));
+		});	
 
 		db.close();
 	});
-}
-
-
-app.get('/insert', function(req, res){
-	var obj = {
-			'test':'wack',
-			'yeet':'yo'
-		};
-
-	insert(obj);
-});
-
-app.get('/view', function(req, res){
-	async function init(){
-		var result = await view();
-
-		console.log("Result is: " +JSON.stringify(result));
-		
-	}
-	
-	init();
 });
 
 
