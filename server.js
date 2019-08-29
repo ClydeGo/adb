@@ -6,6 +6,8 @@ var dbname = "adb";
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
+app.use(express.static(__dirname + '/views/www'));
+console.log(__dirname + '/views/www');
 app.set('view engine', 'ejs');
 var session = require("express-session");
 var sess = {
@@ -185,36 +187,99 @@ app.get('/addBalance', function(req, res){
 	});
 });
 
-app.get('/subtractBalance', function(req, res){
-	mongoClient.connect(url, function(err, db){
-		if(err) console.log(err);
+
+app.post('/subtractBalance', function(req, res){
+
+console.log("a lot of random stuff but this is current session");
+console.log(sess.user.username);
+mongoClient.connect(url, function(err, db,callback){
+database = db.db(dbname);
+collection = database.collection("users");
+transaction = database.collection("transactions");
+
+var obj = {
+'username':sess.user.username, 
+'password':sess.user.password,
+'deduct': parseInt(req.body.amount)
+};
+
+
+var ins = {
+'buyer': obj.username,
+'seller': 'rannzchick', //change to req.body.seller when you add another form to the amount section with qr code
+'transaction': obj.deduct,
+'transactionType': 'Sales'
+};
+
+console.log(req.body.amount);
+collection.findOneAndUpdate({'username':obj.username, 'password':obj.password}, {$inc: {"balance": -(obj.deduct)}});
+
+collection.findOneAndUpdate({'username':ins.seller}, {$inc: {"balance": obj.deduct}});
+
+    
+//insert transaction to both user and seller
+
+//inserts the current transaction
+
+transaction.insert(ins, function(err, result){
+	if(err){
+		console.log(err);
+	}
+
+	mongoClient.connect(url, function(err, db2){
+		var db2 = db2.db(dbname);
+		var collection2 = db2.collection("users");
+		collection2.update({'username':obj.username, 'password':obj.password}, 
+		{
+			$push: {
+				transactions: result.ops[0]._id
+			}
+		}
+
+		);	
 		
-		database = db.db(dbname);
-		collection = database.collection("users");
+		console.log("updated buyer");
+		mongoClient.connect(url, function(err, db3){
+		console.log("meh")
+		var db3 = db3.db(dbname);
+		var collection3 = db3.collection("users");
+		collection3.update({'username':ins.seller}, 
+		{
+			$push: {
+				transactions: result.ops[0]._id
+			}
+		}
+		);	
 
-		var obj = {
-			'username':'rannzchick',
-			'password':'wayMae',
-			'oldBalance':1300,
-			'deduct':200
-		};
-
-		var  newBalance = (obj.oldBalance - obj.deduct);
-		console.log(newBalance);
-		collection.findOneAndUpdate({'username':obj.username, 'password':obj.password}, {$inc: {"balance": -(obj.deduct)}});
-
-
-		//add seller function here
-		//insert transaction to both user and seller
-
+		
+		console.log("updated seller");
 		db.close();
-	});
+		res.send("success");
+
+			
+	})
+			
+	})
+
+	
+
+
 });
+
+
+
+ });
+});
+
 
 //routers
 
 app.get('/register', function(req, res){
 	res.render('www/register.ejs');
+});
+
+app.get('/amount', function(req, res){
+	res.render('www/amount.ejs');
 });
 
 app.get('/homeRedirect', function(req, res){

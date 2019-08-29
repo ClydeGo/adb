@@ -33,29 +33,31 @@
 
 		            <div class="wizard-container-logs"  >
 		                <div class="card-home wizard-card purchase" data-color="green" id="wizard">
-		                <form action="" method="">
-
+		               
 		                    	<div class="wizard-header" style=" position: relative;">
 		                    		<img src="assets/img/circle_logo.png" class="adb-logo">
 		                    	</div>
 
 		                    	<div class="wizard-header" style="text-align: center;">
+
 	                        		<h3 class="wizard-title">Enter Amount</h3>
 	                        		<i>to: Jollibee Ayala</i>
 		                    	</div>
                     			<div class="col-sm-5" style="text-align: center; ">
-                                	<input type="number" style="text-align: center;" onkeypress="validate(event)">
+                    				
+                                		<input type="number" style="text-align: center;" name = 'amount' id="amount" ">
+                               
                             	</div>
                             	<br>
 
 		                        <div class="wizard-footer">
 	                            	<div style="text-align: center;">
-	                                    <a href="history.html"><input type='button' class='btn btn-finish btn-fill btn-wd loginBtn' name='finish' value='Confirm' /></a>
+	                                    <input type='submit' class='btn btn-finish btn-fill btn-wd loginBtn' name='finish' value='Confirm' onclick="transact()"/>
 									</div>
 	                                <div class="clearfix"></div>
 		                        </div>
 		                        
-		                    </form>
+		                   
 		                </div>
 		            </div> <!-- wizard container -->
 		        </div>
@@ -73,3 +75,22 @@
 	<!--  More information about jquery.validate here: http://jqueryvalidation.org/	 -->
 	<script src="assets/js/jquery.validate.min.js" type="text/javascript"></script>
 </html>
+
+<script>
+	function transact(){
+
+		var data = {"amount" : $("#amount").val()
+					};
+		$.ajax({
+  			url: "/subtractBalance",
+  			data: data,
+  			cache: false,
+  			type: 'POST',
+  			success: function(dat){
+  				console.log("weh");
+ 				window.location.replace(window.location.protocol + "//" + window.location.host + "/amount");
+ 			
+  			}
+		});
+	}
+</script>
