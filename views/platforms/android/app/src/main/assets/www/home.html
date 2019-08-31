@@ -79,7 +79,7 @@
 		                                	<div class="col-sm-5 col-sm-offset-1">
 		                                    	<div class="form-group">
 		                                        	<label>Employee</label>
-		                                        	<input type="text" class="form-control" id="exampleInputEmail1" value="Erl Joshua Arcenal" readonly style="color: #000000 !important;">
+		                                        	<input type="text" class="form-control" id="name" readonly style="color: #000000 !important;">
 		                                    	</div>
 		                                	</div>
 		                                	<div class="col-sm-5">
@@ -91,12 +91,12 @@
 		                                	<div class="col-sm-5 col-sm-offset-1">
 		                                    	<div class="form-group">
 		                                        	<label>Balance</label>
-		                                        	<input type="text" class="form-control" id="exampleInputEmail1" value="P750" readonly style="color: #000000 !important;">
+		                                        	<input type="text" class="form-control" id="balance" readonly style="color: #000000 !important;">
 		                                    	</div>
 		                                	</div>
 		                                	<div class="col-sm-5 col-sm-offset-1 topUp">
 		                                    	<div class="form-group ">
-		                                        	<a href="top-up.html"><input type="button" class="form-control top-up-btn" id="exampleInputEmail1" value="Top-up"></a>
+		                                        	<a href="topUp"><input type="button" class="form-control top-up-btn" id="exampleInputEmail1" value="Top-up"></a>
 		                                    	</div>
 		                                	</div>
 		                            	</div>
@@ -139,6 +139,19 @@
 	<script type="text/javascript" src="cordova.js"></script>
 	<script src="assets/js/jquery-2.2.4.min.js" type="text/javascript"></script>
 	<script>
+		$(window).load(function() {
+			// page is fully loaded, including all frames, objects and images
+			$.ajax({
+	  			url: "http://localhost:8080/getData",
+	  			cache: false,
+	  			type: 'GET',
+	  			success: function(dat){
+	 				console.log(dat);
+	 				$('#name').val(dat.fullname);
+	 				$('#balance').val(dat.balance);
+	  			}
+			});
+		});
 		function openRightMenu() {
 		  document.getElementById("rightMenu").style.display = "block";
 		}

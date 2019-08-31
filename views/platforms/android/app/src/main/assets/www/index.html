@@ -47,20 +47,20 @@
 
 		                        			<div class="col-sm-5 col-sm-offset-1">
 		                                    	<div class="form-group">
-		                                        	<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Staff ID">
+		                                        	<input type="text" class="form-control" id="username" placeholder="Staff ID">
 		                                    	</div>
 		                                	</div>
 		                                	<div class="col-sm-5">
 		                                    	<div class="form-group">
-		                                        	<input type="Password" class="form-control" id="exampleInputEmail1" placeholder="PIN">
+		                                        	<input type="Password" class="form-control" id="password" placeholder="PIN">
 		                                    	</div>
 		                                	</div>
 
 		                        <div class="wizard-footer" style="text-align: center;">
 	                            	<div style="text-align: center;">
-	                                    <a href="home.html"><input type='button' class='btn btn-finish btn-fill btn-wd loginBtn' name='finish' value='Login' /></a>
+	                                    <input type='button' id= "login" class='btn btn-finish btn-fill btn-wd loginBtn' name='finish' value='Login' />
 									</div>
-									<a href="register.html" style="text-decoration: none;"><p style="margin-top: 10px;">Register</p></a>
+									<a href="register"><p style="margin-top: 10px;">Register</p></a>
 	                                <div class="clearfix"></div>
 		                        </div>
 		                        
@@ -83,3 +83,25 @@
 	<script src="assets/js/jquery.validate.min.js" type="text/javascript"></script>
 
 </html>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+$("#login").on("click",function(){
+
+	var data = {"username" : $("#username").val().toString(),
+					"password" : $("#password").val().toString()
+					};
+	$.ajax({
+  			url: "http://localhost:8080/login",
+  			data: data,
+  			cache: false,
+  			type: 'POST',
+  			success: function(dat){
+ 				if(dat == "0"){
+ 					console.log("Login Error");
+ 				}else{
+ 					window.location.replace(window.location.protocol + "//" + window.location.host + "/home.html");
+ 				}
+  			}
+		});
+});
+</script>

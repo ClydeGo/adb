@@ -91,7 +91,7 @@ $("#login").on("click",function(){
 					"password" : $("#password").val().toString()
 					};
 	$.ajax({
-  			url: "/login",
+  			url: "http://localhost:8080/login",
   			data: data,
   			cache: false,
   			type: 'POST',
@@ -99,7 +99,7 @@ $("#login").on("click",function(){
  				if(dat == "0"){
  					console.log("Login Error");
  				}else{
- 					window.location.replace(window.location.protocol + "//" + window.location.host + "/homeRedirect");
+ 					window.location.replace(window.location.protocol + "//" + window.location.host + "/home.html");
  				}
   			}
 		});
