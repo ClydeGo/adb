@@ -484,7 +484,7 @@ app.get('/transactionHistory', function(req, res){
 			
 			transactions = finalTransactions.transactions;
 			console.log("Mao ni " +JSON.stringify(transactions[1]));
-			res.render("www/history.ejs", {transactions:transactions});
+			res.send(transactions);
 		});
 
 		db.close();
